@@ -1,0 +1,15 @@
+.collection-header {
+  padding: 20px 24px;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: white;
+  margin-bottom: 30px;
+}
+
+.collection-title {
+  font-size: 32px;
+  font-weight: 700;
+}
+
+.collection-grid {
+  margin-top: 32px;
+}
