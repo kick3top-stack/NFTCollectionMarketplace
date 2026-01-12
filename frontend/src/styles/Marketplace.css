@@ -1,0 +1,6 @@
+.marketplace {
+  padding: 32px;
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+}
