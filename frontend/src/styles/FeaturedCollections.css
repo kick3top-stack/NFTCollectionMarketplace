@@ -1,0 +1,78 @@
+/* Container for the slider */
+.featured-slider-container {
+  width: 100%;
+  margin: 40px 0;
+  padding: 0 40px; /* padding to prevent cards from being cut off */
+  box-sizing: border-box;
+}
+
+/* Swiper wrapper fixes */
+.featured-slider-container .swiper {
+  overflow: hidden; /* allow cards to fully show */
+  padding-bottom: 20px; /* space for navigation arrows */
+}
+
+/* Individual slides */
+.featured-slider-container .swiper-slide {
+  display: flex;
+  justify-content: center;
+  box-sizing: border-box;
+  transition: transform ease 0.3s;
+}
+
+/* Optional: center card larger effect */
+/*
+.featured-slider-container .swiper-slide-active {
+  transform: scale(1.05);
+}
+*/
+
+/* CollectionCard inside Swiper */
+.featured-slider-container .swiper-slide > div {
+  width: 100%;
+  max-width: 280px; /* max card width */
+}
+
+/* Swiper navigation arrows */
+.featured-slider-container .swiper-button-next,
+.featured-slider-container .swiper-button-prev {
+  color: #f50;           /* arrow color */
+  width: 30px;
+  height: 30px;
+  padding: 10px;
+  top: 50%;
+  right:10px;
+  transform: translateY(-50%);
+  background: rgba(255, 85, 0, 0.15);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 16px;
+  transition: all ease 0.2s;
+}
+
+.featured-slider-container .swiper-button-next:hover,
+.featured-slider-container .swiper-button-prev:hover {
+  background: rgba(255, 85, 0, 0.35);
+}
+
+/* Adjust for smaller screens */
+@media screen and (max-width: 1024px) {
+  .featured-slider-container .swiper-slide > div {
+    max-width: 240px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .featured-slider-container .swiper-slide > div {
+    max-width: 200px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .featured-slider-container .swiper-slide > div {
+    max-width: 90%;
+  }
+}
+
