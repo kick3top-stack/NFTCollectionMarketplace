@@ -1,10 +1,9 @@
 import { ethers } from "ethers";
 import NFTCollectionArtifact from "../abi/NFTCollection.json";
 
-
 // 🔴 REPLACE with your deployed NFTCollection address
 export const NFT_COLLECTION_ADDRESS =
-  "0xf664F1418ddaab35AF3d6104ee33894a2903d2a7";
+  "0x8d39dd3F1D31313955271a67C56060ECC1a04d17";
 
 export function getNFTContract(signerOrProvider) {
   return new ethers.Contract(
