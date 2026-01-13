@@ -7,11 +7,9 @@ import { connectWalletAndGetBalance } from "../../services/wallet";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
-  // const [account, setAccount] = useState("");
-  // const [balance, setBalance] = useState("");
-  // const [networkName, setNetwork] = useState("");
-
-  //   const { account, balance, connectWallet } = useWallet();
+  const [account, setAccount] = useState("");
+  const [balance, setBalance] = useState("");
+  const [networkName, setNetwork] = useState("");
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
@@ -25,9 +23,9 @@ export default function Navbar() {
 
       if (!data) return;
 
-      // setAccount(data.address);
-      // setBalance(data.balance);
-      // setNetwork(data.networkName);
+      setAccount(data.address);
+      setBalance(data.balance);
+      setNetwork(data.networkName);
     } catch (error) {
       console.error("Connection failed:", error);
     }
@@ -60,8 +58,8 @@ export default function Navbar() {
         <div className="navbar-right">
           <button className="wallet-btn" onClick={connectWallet}>
             <>
-              {/* { account ? `${account.slice(0, 6)}...${account.slice(-4) }` + "->" + `${Number(balance).toFixed(3)}` + "ETH in " + `${networkName}`
-                : "Connect Wallet"} */}
+              { account ? `${account.slice(0, 6)}...${account.slice(-4) }` + "->" + `${Number(balance).toFixed(3)}` + "ETH in " + `${networkName}`
+                : "Connect Wallet"}
             </>
           </button>
         </div>

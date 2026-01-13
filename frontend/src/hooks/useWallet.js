@@ -1,42 +1,42 @@
-// import { useState, useEffect } from "react";
-// import { connectWalletAndGetBalance } from "../services/wallet";
+import { useState, useEffect } from "react";
+import { connectWalletAndGetBalance } from "../services/wallet";
 
-// export default function useWallet() {
-//    const [address, setAddress] = useState(null);
+export default function useWallet() {
+   const [address, setAddress] = useState(null);
 
-//   // ETH balance
-//   const [balance, setBalance] = useState(null);
+  // ETH balance
+  const [balance, setBalance] = useState(null);
 
-//   // Network name
-//   const [network, setNetwork] = useState(null);
+  // Network name
+  const [network, setNetwork] = useState(null);
 
-//   const connectWallet = async () => {
-//     try {
-//       const data = await connectWalletAndGetBalance();
+  const connectWallet = async () => {
+    try {
+      const data = await connectWalletAndGetBalance();
 
-//       if (!data) return;
+      if (!data) return;
 
-//       setAddress(data.address);
-//       setBalance(data.balance);
-//       setNetwork(data.networkName);
+      setAddress(data.address);
+      setBalance(data.balance);
+      setNetwork(data.networkName);
 
-//     } catch (error) {
-//       console.error("Connection failed:", error);
-//     }
-//   };
+    } catch (error) {
+      console.error("Connection failed:", error);
+    }
+  };
 
-//   connectWallet();
+  connectWallet();
 
-//   console.log({
-//         address,
-//         balance,
-//         network
-//     });
+  console.log({
+        address,
+        balance,
+        network
+    });
 
-//   return ( {
-//         address,
-//         balance,
-//         network
-//     }
-// );
-// }
+  return ( {
+        address,
+        balance,
+        network
+    }
+);
+}
