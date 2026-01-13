@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import "../styles/create-collection.css";
 import { uploadToIPFS, uploadJSONToIPFS } from "../utils/ipfs";
@@ -14,6 +14,10 @@ export default function CreateCollection() {
   const [nftDesc, setNftDesc] = useState("");
   const [imageFile, setImageFile] = useState(null);
   const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        getNFTContract();
+    }, [])
 
   async function handleCreate() {
     if (!window.ethereum) {
@@ -57,7 +61,7 @@ export default function CreateCollection() {
 
       await tx.wait();
 
-      window.location.href = `/collection/${collectionName}`;
+      window.location.href = `/collections/${collectionName}`;
     } catch (err) {
       console.error(err);
       alert(err.reason || "Transaction failed");

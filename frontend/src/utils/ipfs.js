@@ -1,39 +1,64 @@
 // Upload image/file to IPFS
+import axios from "axios";
+
+const PINATA_API_KEY = process.env.REACT_APP_PINATA_KEY;
+const PINATA_SECRET_API_KEY = process.env.REACT_APP_PINATA_SECRET;
+
 export async function uploadToIPFS(file) {
-  const formData = new FormData();
-  formData.append("file", file);
+  if (!file) return;
+  console.log(PINATA_API_KEY, PINATA_SECRET_API_KEY);
 
-  const res = await fetch("https://api.pinata.cloud/pinning/pinFileToIPFS", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${import.meta.env.VITE_PINATA_JWT}`
-    },
-    body: formData
-  });
+  try {
+    const formData = new FormData();
+    formData.append("file", file);
 
-  if (!res.ok) {
-    throw new Error("IPFS file upload failed");
+    const res = await axios.post(
+      "https://api.pinata.cloud/pinning/pinFileToIPFS",
+      formData,
+      {
+        maxBodyLength: Infinity,
+        timeout: 120000, // ⬅️ 2 minutes
+        headers: {
+          "Content-Type": `multipart/form-data; boundary=${formData._boundary}`,
+          pinata_api_key: PINATA_API_KEY,
+          pinata_secret_api_key: PINATA_SECRET_API_KEY,
+        },
+      }
+    );
+
+    const url = `https://gateway.pinata.cloud/ipfs/${res.data.IpfsHash}`;
+    console.log("IPFS URL:", url);
+  } catch (error) {
+    console.log("ipfs image upload error:", error);
   }
-
-  const data = await res.json();
-  return `ipfs://${data.IpfsHash}`;
 }
 
-// Upload JSON metadata to IPFS
 export async function uploadJSONToIPFS(json) {
-  const res = await fetch("https://api.pinata.cloud/pinning/pinJSONToIPFS", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${import.meta.env.VITE_PINATA_JWT}`
-    },
-    body: JSON.stringify(json)
-  });
+  if (!json) return;
+  console.log(PINATA_API_KEY, PINATA_SECRET_API_KEY);
 
-  if (!res.ok) {
-    throw new Error("IPFS JSON upload failed");
+  try {
+    const formData = new FormData();
+    formData.append("json", json);
+
+    const res = await axios.post(
+      "https://api.pinata.cloud/pinning/pinJSONToIPFS",
+      // formData,
+      json,
+      {
+        maxBodyLength: Infinity,
+        timeout: 120000, // ⬅️ 2 minutes
+        headers: {
+          "Content-Type": `multipart/form-data; boundary=${formData._boundary}`,
+          pinata_api_key: PINATA_API_KEY,
+          pinata_secret_api_key: PINATA_SECRET_API_KEY,
+        },
+      }
+    );
+
+    const url = `https://gateway.pinata.cloud/ipfs/${res.data.IpfsHash}`;
+    console.log("IPFS URL:", url);
+  } catch (error) {
+    console.log("ipfs Json upload error:", error);
   }
-
-  const data = await res.json();
-  return `ipfs://${data.IpfsHash}`;
 }
