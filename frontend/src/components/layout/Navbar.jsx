@@ -50,7 +50,9 @@ export default function Navbar() {
           <li>
             <Link to="/collections">Collections</Link>
           </li>
-          <a href="#">Create</a>
+          <li>
+            <Link to="/create">Create</Link>
+          </li>
           <a href="#">Stats</a>
         </nav>
 
