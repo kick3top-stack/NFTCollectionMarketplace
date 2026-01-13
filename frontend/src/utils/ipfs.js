@@ -43,13 +43,9 @@ export async function uploadJSONToIPFS(json) {
 
     const res = await axios.post(
       "https://api.pinata.cloud/pinning/pinJSONToIPFS",
-      // formData,
       json,
       {
-        maxBodyLength: Infinity,
-        timeout: 120000, // ⬅️ 2 minutes
         headers: {
-          "Content-Type": `multipart/form-data; boundary=${formData._boundary}`,
           pinata_api_key: PINATA_API_KEY,
           pinata_secret_api_key: PINATA_SECRET_API_KEY,
         },
