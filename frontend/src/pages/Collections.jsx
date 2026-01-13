@@ -481,7 +481,7 @@ export default function Collections() {
       <CollectionHeader title="Featured Collections" />
       <FeaturedCollectionsSlider />
       <CollectionHeader title="All Collections" />
-      <CollectionGrid collections={allCollections}/>
+      <CollectionGrid collections={allCollections} />
     </section>
   );
 }

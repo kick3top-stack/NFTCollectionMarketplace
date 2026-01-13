@@ -55,7 +55,7 @@ export default function FeaturedCollectionsSlider() {
     <div className="featured-slider-container">
       <Swiper
         modules={[Navigation]}
-        loop={true}  // no loop needed
+        loop={true} // no loop needed
         slidesPerView={3}
         spaceBetween={20}
         loopFillGroupWithBlank={true}
