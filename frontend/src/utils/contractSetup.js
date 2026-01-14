@@ -1,28 +1,32 @@
 import { ethers } from "ethers";
-// Import ABI for NFTCollection and NFTMarketplace
-import NFTCollectionABI from "../abi/NFTCollection.json";
-import NFTMarketplaceABI from "../abi/NFTMarketplace.json";
 
-// Set up your provider (MetaMask or a custom provider like Infura)
+// Your existing contract addresses and contract ABI
+import NFTCollectionJSON from "../abi/NFTCollection.json";
+import NFTMarketplaceJSON from "../abi/NFTMarketplace.json";
+
+// Contract addresses (fill in your actual contract addresses)
+export const NFT_COLLECTION_ADDRESS =
+  "0xe2137EA89E844Db61377DABA16398d3999b29E45";
+export const MARKETPLACE_ADDRESS = "0x8d39dd3F1D31313955271a67C56060ECC1a04d17";
+
+// MetaMask provider
 export const provider = new ethers.BrowserProvider(window.ethereum);
 
-// Replace these with your actual contract addresses
-const nftContractAddress = "0xe2137EA89E844Db61377DABA16398d3999b29E45";
-const marketplaceContractAddress = "0x8d39dd3F1D31313955271a67C56060ECC1a04d17";
+// Get signer from the connected wallet
+export const getSigner = async () => {
+  const signer = await provider.getSigner();
+  return signer;
+};
 
-// Initialize contracts using their addresses and ABIs
-const nftContract = new ethers.Contract(
-  nftContractAddress,
-  NFTCollectionABI.abi,
-  provider
-);
-const marketplaceContract = new ethers.Contract(
-  marketplaceContractAddress,
-  NFTMarketplaceABI.abi,
+// Read-only contract instances
+export const nftContract = new ethers.Contract(
+  NFT_COLLECTION_ADDRESS,
+  NFTCollectionJSON.abi,
   provider
 );
 
-// Get signer from the provider to send transactions (e.g., MetaMask)
-const signer = provider.getSigner();
-
-export { marketplaceContract, nftContract, signer };
+export const marketplaceContract = new ethers.Contract(
+  MARKETPLACE_ADDRESS,
+  NFTMarketplaceJSON.abi,
+  provider
+);

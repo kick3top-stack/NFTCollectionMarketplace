@@ -5,9 +5,9 @@ import CreateCollection from "../pages/CreateCollection";
 import Home from "../pages/Home";
 
 import {
+  getSigner,
   marketplaceContract,
   nftContract,
-  signer,
 } from "../utils/contractSetup";
 
 export default function AppRoutes() {
@@ -22,7 +22,7 @@ export default function AppRoutes() {
           <CollectionNFTPage
             nftContract={nftContract}
             marketplaceContract={marketplaceContract}
-            signer={signer} // Pass the signer to enable transactions
+            signer={getSigner()} // Pass the signer to enable transactions
           />
         }
       />

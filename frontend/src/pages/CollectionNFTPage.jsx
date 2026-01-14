@@ -1,84 +1,78 @@
-import { ethers } from "ethers";
-import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import "../styles/CollectionNFTPage.css"; // Make sure to import CSS
 
-export default function CollectionNFTPage({
-  nftContract,
-  marketplaceContract,
-}) {
+import NFTCard from "../components/nft/NFTCard";
+import { marketplaceContract, nftContract } from "../utils/contractSetup";
+
+export default function CollectionNFTPage() {
   const { collectionName } = useParams();
+
   const [nfts, setNfts] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function loadListedNFTs() {
-      setLoading(true);
+    if (!collectionName) return;
 
+    const loadNFTs = async () => {
       try {
-        const totalTokens = await nftContract.tokenCounter();
-        const listedNFTs = [];
+        setLoading(true);
 
-        for (let tokenId = 0; tokenId < totalTokens; tokenId++) {
+        // total minted NFTs
+        const total = await nftContract.tokenCounter();
+
+        const items = [];
+
+        for (let tokenId = 0; tokenId < Number(total); tokenId++) {
+          // 1️⃣ check collection name
           const name = await nftContract.collections(tokenId);
-          if (name === collectionName) {
-            const listing = await marketplaceContract.listings(
-              nftContract.address,
-              tokenId
-            );
-            if (Number(listing.price) > 0) {
-              const tokenURI = await nftContract.tokenURI(tokenId);
-              const meta = await fetch(tokenURI).then((res) => res.json());
+          if (name !== collectionName) continue;
 
-              listedNFTs.push({
-                tokenId,
-                ...meta,
-                price: listing.price,
-              });
-            }
-          }
+          // 2️⃣ check if listed (HIDDEN until listed)
+          const listing = await marketplaceContract.listings(
+            nftContract.target, // ethers v6 address
+            tokenId
+          );
+
+          if (listing.price === 0n) continue;
+
+          // 3️⃣ token metadata
+          const tokenURI = await nftContract.tokenURI(tokenId);
+          const metadata = await fetch(tokenURI).then((res) => res.json());
+
+          items.push({
+            tokenId,
+            tokenAddress: nftContract.target,
+            name: metadata.name,
+            description: metadata.description,
+            image: metadata.image,
+            price: listing.price,
+            seller: listing.seller,
+          });
         }
 
-        setNfts(listedNFTs);
-      } catch (error) {
-        console.error("Error fetching NFTs:", error);
+        setNfts(items);
+      } catch (err) {
+        console.error("Failed to load NFTs:", err);
+      } finally {
+        setLoading(false);
       }
+    };
 
-      setLoading(false);
-    }
-
-    loadListedNFTs();
-  }, [collectionName, nftContract, marketplaceContract]);
+    loadNFTs();
+  }, [collectionName]);
 
   return (
-    <div className="nft-page">
-      <h1 className="page-title">{collectionName}</h1>
+    <div className="collection-nft-page">
+      <h1 className="collection-title">{collectionName}</h1>
 
       {loading ? (
-        <p className="loading">Loading NFTs...</p>
+        <p className="loading-text">Loading NFTs...</p>
       ) : nfts.length === 0 ? (
-        <p className="loading">No NFTs listed in this collection yet.</p>
+        <p className="empty-text">No listed NFTs in this collection</p>
       ) : (
         <div className="nft-grid">
-          {nfts.map((nft, index) => (
-            <motion.div
-              key={nft.tokenId}
-              className="nft-card"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.05 }}
-              whileHover={{ scale: 1.04 }}
-            >
-              <img src={nft.image} alt={nft.name} />
-              <div className="nft-info">
-                <h3>{nft.name}</h3>
-                <p>#{nft.tokenId}</p>
-                <p className="price">
-                  Price: {ethers.formatEther(nft.price)} ETH
-                </p>
-              </div>
-            </motion.div>
+          {nfts.map((nft) => (
+            <NFTCard key={nft.tokenId} nft={nft} />
           ))}
         </div>
       )}

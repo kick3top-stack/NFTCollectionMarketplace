@@ -1,42 +1,94 @@
-import { useEffect, useState } from "react";
 import { ethers } from "ethers";
+import { useEffect, useState } from "react";
+import SmartAlert from "../components/common/SmartAlert";
 import "../styles/create-collection.css";
-import { uploadToIPFS, uploadJSONToIPFS } from "../utils/ipfs";
 import { getNFTContract } from "../utils/contracts";
+import { nftContract } from "../utils/contractSetup";
+import { uploadJSONToIPFS, uploadToIPFS } from "../utils/ipfs";
 
 const MINT_PRICE = "0.01";
 
 export default function CreateCollection() {
-    console.log("CreateCollection function has been called.");
+  console.log("CreateCollection function has been called.");
   const [collectionName, setCollectionName] = useState("");
   const [collectionDesc, setCollectionDesc] = useState("");
   const [nftName, setNftName] = useState("");
   const [nftDesc, setNftDesc] = useState("");
   const [imageFile, setImageFile] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [alert, setAlert] = useState(null);
+  const [existingCollections, setExistingCollections] = useState(new Set());
 
-    useEffect(() => {
-        getNFTContract();
-    }, [])
+  useEffect(() => {
+    const fetchCollections = async () => {
+      try {
+        const totalTokens = await nftContract.tokenCounter(); // get total minted
+        const collectionsSet = new Set();
+
+        for (let i = 0; i < totalTokens; i++) {
+          const collection = await nftContract.collections(i);
+          collectionsSet.add(collection);
+        }
+
+        setExistingCollections(collectionsSet);
+      } catch (err) {
+        console.error("Failed to fetch collections", err);
+      }
+    };
+
+    fetchCollections();
+  }, []);
+
+  useEffect(() => {
+    getNFTContract();
+  }, []);
 
   async function handleCreate() {
     if (!window.ethereum) {
-      alert("Wallet not connected");
+      setAlert({
+        message: "Not enough ETH to mint this NFT",
+        type: "error",
+      });
       return;
     }
 
     if (!collectionName || !nftName || !imageFile) {
-      alert("Please fill all required fields");
+      setAlert({
+        message: "Please fill all required fields",
+        type: "error",
+      });
       return;
     }
 
     try {
       setLoading(true);
 
+      ///check enough money
       const provider = new ethers.BrowserProvider(window.ethereum);
       const signer = await provider.getSigner();
       const userAddress = await signer.getAddress();
       const nftContract = getNFTContract(signer);
+
+      // Check if collection already exists
+      if (existingCollections.has(collectionName)) {
+        setAlert({
+          message: "This collection already exists!",
+          type: "warning",
+        });
+        setTimeout(() => setAlert(null), 3000);
+        return;
+      }
+
+      const balance = await provider.getBalance(userAddress);
+      if (balance < MINT_PRICE * 10000000000 * 100000000) {
+        setAlert({
+          message: "Not enough ETH to mint this NFT",
+          type: "error",
+        });
+        setTimeout(() => setAlert(null), 3000);
+        setLoading(false);
+        return;
+      }
 
       // Upload image
       const imageURI = await uploadToIPFS(imageFile);
@@ -47,24 +99,25 @@ export default function CreateCollection() {
         description: nftDesc,
         image: imageURI,
         collection: collectionName,
-        creator: userAddress
+        creator: userAddress,
       };
 
       const tokenURI = await uploadJSONToIPFS(metadata);
 
       // Mint NFT
-      const tx = await nftContract.mintNFT(
-        tokenURI,
-        collectionName,
-        { value: ethers.parseEther(MINT_PRICE) }
-      );
+      const tx = await nftContract.mintNFT(tokenURI, collectionName, {
+        value: ethers.parseEther(MINT_PRICE),
+      });
 
       await tx.wait();
+
+      setAlert("NFT minted successfully!");
+      setTimeout(() => setAlert(null), 3000);
 
       window.location.href = `/collections/${collectionName}`;
     } catch (err) {
       console.error(err);
-      alert(err.reason || "Transaction failed");
+      setAlert(err.reason || "Transaction failed");
     } finally {
       setLoading(false);
     }
@@ -76,7 +129,6 @@ export default function CreateCollection() {
         <h1>Create a collection</h1>
         <p>Create a new collection by minting your first NFT.</p>
       </header>
-
       <div className="card">
         <h2>Collection details</h2>
 
@@ -94,7 +146,6 @@ export default function CreateCollection() {
           onChange={(e) => setCollectionDesc(e.target.value)}
         />
       </div>
-
       <div className="card">
         <h2>Your first NFT</h2>
 
@@ -122,7 +173,6 @@ export default function CreateCollection() {
           onChange={(e) => setNftDesc(e.target.value)}
         />
       </div>
-
       <div className="mint-summary">
         <div className="summary-row">
           <span>Mint price</span>
@@ -137,6 +187,7 @@ export default function CreateCollection() {
           {loading ? "Creating..." : "Create collection"}
         </button>
       </div>
+      <SmartAlert message={alert?.message} type={alert?.type} />
     </div>
   );
 }
