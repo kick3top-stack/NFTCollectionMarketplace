@@ -1,38 +1,55 @@
+import { ethers } from "ethers";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import "../styles/CollectionNFTPage.css"; // Make sure to import CSS
 
-export default function CollectionNFTPage({ nftContract }) {
+export default function CollectionNFTPage({
+  nftContract,
+  marketplaceContract,
+}) {
   const { collectionName } = useParams();
   const [nfts, setNfts] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function loadNFTs() {
+    async function loadListedNFTs() {
       setLoading(true);
 
-      const total = await nftContract.tokenCounter();
-      const results = [];
+      try {
+        const totalTokens = await nftContract.tokenCounter();
+        const listedNFTs = [];
 
-      for (let tokenId = 0; tokenId < total; tokenId++) {
-        const name = await nftContract.collections(tokenId);
-        if (name === collectionName) {
-          const uri = await nftContract.tokenURI(tokenId);
-          const meta = await fetch(uri).then((r) => r.json());
+        for (let tokenId = 0; tokenId < totalTokens; tokenId++) {
+          const name = await nftContract.collections(tokenId);
+          if (name === collectionName) {
+            const listing = await marketplaceContract.listings(
+              nftContract.address,
+              tokenId
+            );
+            if (Number(listing.price) > 0) {
+              const tokenURI = await nftContract.tokenURI(tokenId);
+              const meta = await fetch(tokenURI).then((res) => res.json());
 
-          results.push({
-            tokenId,
-            ...meta,
-          });
+              listedNFTs.push({
+                tokenId,
+                ...meta,
+                price: listing.price,
+              });
+            }
+          }
         }
+
+        setNfts(listedNFTs);
+      } catch (error) {
+        console.error("Error fetching NFTs:", error);
       }
 
-      setNfts(results);
       setLoading(false);
     }
 
-    loadNFTs();
-  }, [collectionName]);
+    loadListedNFTs();
+  }, [collectionName, nftContract, marketplaceContract]);
 
   return (
     <div className="nft-page">
@@ -40,21 +57,26 @@ export default function CollectionNFTPage({ nftContract }) {
 
       {loading ? (
         <p className="loading">Loading NFTs...</p>
+      ) : nfts.length === 0 ? (
+        <p className="loading">No NFTs listed in this collection yet.</p>
       ) : (
         <div className="nft-grid">
-          {nfts.map((nft, i) => (
+          {nfts.map((nft, index) => (
             <motion.div
               key={nft.tokenId}
               className="nft-card"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.05 }}
+              transition={{ delay: index * 0.05 }}
               whileHover={{ scale: 1.04 }}
             >
               <img src={nft.image} alt={nft.name} />
               <div className="nft-info">
                 <h3>{nft.name}</h3>
                 <p>#{nft.tokenId}</p>
+                <p className="price">
+                  Price: {ethers.formatEther(nft.price)} ETH
+                </p>
               </div>
             </motion.div>
           ))}

@@ -54,6 +54,7 @@ export async function uploadJSONToIPFS(json) {
 
     const url = `https://gateway.pinata.cloud/ipfs/${res.data.IpfsHash}`;
     console.log("IPFS URL:", url);
+    return url;
   } catch (error) {
     console.log("ipfs Json upload error:", error);
   }
