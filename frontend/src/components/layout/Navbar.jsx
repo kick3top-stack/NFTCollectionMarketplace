@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 // import useWallet from "../../hooks/useWallet";
 import "../../styles/navbar.css";
 
@@ -53,14 +53,21 @@ export default function Navbar() {
           <li>
             <Link to="/create">Create</Link>
           </li>
-          <a href="#">Stats</a>
+          <li>
+            <Link to="/mynfts">MyNFTs</Link>
+          </li>
         </nav>
 
         {/* Right */}
         <div className="navbar-right">
           <button className="wallet-btn" onClick={connectWallet}>
             <>
-              { account ? `${account.slice(0, 6)}...${account.slice(-4) }` + "->" + `${Number(balance).toFixed(3)}` + "ETH in " + `${networkName}`
+              {account
+                ? `${account.slice(0, 6)}...${account.slice(-4)}` +
+                  "->" +
+                  `${Number(balance).toFixed(3)}` +
+                  "ETH in " +
+                  `${networkName}`
                 : "Connect Wallet"}
             </>
           </button>
