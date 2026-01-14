@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 ////////NFTMarketplace.sol/////////////////////
-
+///0x8d39dd3F1D31313955271a67C56060ECC1a04d17---seplia contract adress
 
 pragma solidity ^0.8.28;
 
