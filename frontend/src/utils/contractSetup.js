@@ -30,3 +30,8 @@ export const marketplaceContract = new ethers.Contract(
   NFTMarketplaceJSON.abi,
   provider
 );
+
+/**
+ * Fetch NFTs owned by connected wallet
+ * Optionally filter by collection name
+ */

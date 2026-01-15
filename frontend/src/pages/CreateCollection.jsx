@@ -103,6 +103,7 @@ export default function CreateCollection() {
       };
 
       const tokenURI = await uploadJSONToIPFS(metadata);
+      console.log(metadata);
 
       // Mint NFT
       const tx = await nftContract.mintNFT(tokenURI, collectionName, {

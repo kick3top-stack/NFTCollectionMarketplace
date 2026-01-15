@@ -1,81 +1,42 @@
-/* General Styling for the Page */
-.nft-page {
-  padding: 20px;
-  background-color: #121212; /* Dark theme background */
+/* =========================
+   MyNFTPage Styles
+   ========================= */
+
+/* Page container */
+.my-nft-page {
+  padding: 90px 24px 24px; /* top padding avoids 72px navbar + spacing */
+  min-height: 100vh;
+  background-color: #121212;
   color: #fff;
-  padding-top: 92px; /* Added extra space to prevent content being covered by navbar */
 }
 
-/* Grid Layout for the NFTs */
-.nft-grid {
-  display: grid;
-  grid-template-columns: repeat(
-    auto-fill,
-    minmax(250px, 1fr)
-  ); /* Auto-adjust columns based on screen width */
-  gap: 20px; /* Space between items */
-  padding-bottom: 20px; /* Space at the bottom */
+/* Page title */
+.my-nft-page__title {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 24px;
 }
 
-/* Individual NFT Card Styling */
-.nft-card {
-  background-color: #1e1e1e; /* Dark background for the card */
-  border-radius: 10px;
-  padding: 16px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-  transition: transform 0.3s ease; /* Smooth hover effect */
+/* Grid of NFT cards */
+.my-nft-page__grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: flex-start;
 }
 
-.nft-card:hover {
-  transform: translateY(-10px); /* Elevate card on hover */
-}
-
-/* NFT Image Styling */
-.nft-card img {
-  width: 100%;
-  border-radius: 8px;
-  height: 200px;
-  object-fit: cover; /* Make sure image covers the space nicely */
-}
-
-/* Card Title (NFT Name) */
-.nft-card h3 {
-  margin-top: 10px;
-  font-size: 18px;
-  color: #fff; /* White text color for the title */
-  font-weight: bold;
-}
-
-/* Card Description (Additional Info) */
-.nft-card p {
-  font-size: 14px;
-  color: #ccc; /* Light gray text color */
-}
-
-/* Empty State Message Styling (When No NFTs Are Found) */
-.nft-grid p {
-  color: #ccc; /* Light gray for empty state */
+/* Loading state */
+.my-nft-page__loading {
+  font-size: 16px;
+  color: #aaa;
   text-align: center;
-  font-size: 18px;
-  margin-top: 50px; /* Space for the message to stand out */
+  margin-top: 40px;
 }
 
-/* Optional: Alert Styling (if you use SmartAlert or other notifications) */
-.alert {
-  background-color: #f8d7da;
-  color: #721c24;
-  padding: 10px;
-  border-radius: 5px;
-  margin-bottom: 10px;
-  font-size: 14px;
-}
-
-.alert.success {
-  background-color: #d4edda;
-  color: #155724;
-}
-
-.alert.error {
-  background-color: #f8d7da;
-  color: #721c24;
+/* Empty state */
+.my-nft-page__empty {
+  font-size: 16px;
+  color: #888;
+  text-align: center;
+  margin-top: 40px;
 }

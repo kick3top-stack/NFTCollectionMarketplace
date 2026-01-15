@@ -1,82 +1,79 @@
 import { useEffect, useState } from "react";
-import SmartAlert from "../components/common/SmartAlert"; // Optional if you want to show alerts
+import MyNFTCard from "../components/nft/MyNFTCard";
 import "../styles/MyNFTPage.css";
-import { getSigner, nftContract } from "../utils/contractSetup"; // Adjust import based on your contract setup
+import {
+  marketplaceContract,
+  NFT_COLLECTION_ADDRESS,
+} from "../utils/contractSetup";
+import { fetchNFTData } from "../utils/fetchNFTData";
 
-export default function NFTPage() {
-  console.log("my naft page.");
+export default function MyNFTPage() {
   const [nfts, setNfts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [alert, setAlert] = useState(null);
 
   useEffect(() => {
-    const fetchOwnedNFTs = async () => {
-      try {
-        const signer = await getSigner();
-        const userAddress = await signer.getAddress();
-
-        const totalTokens = await nftContract.tokenCounter(); // Get total minted tokens
-        const nftArray = [];
-
-        // Loop through all minted tokens to check ownership
-        for (let i = 0; i < totalTokens; i++) {
-          const tokenId = i;
-          const owner = await nftContract.ownerOf(tokenId); // Get the owner of this token
-
-          if (owner.toLowerCase() === userAddress.toLowerCase()) {
-            // Only push the NFTs owned by the current user
-            const collectionName = await nftContract.collections(tokenId);
-            const tokenURI = await nftContract.tokenURI(tokenId); // Get token URI
-
-            // Fetch metadata (like image, name, etc.)
-            const response = await fetch(tokenURI);
-            const metadata = await response.json();
-
-            nftArray.push({
-              tokenId,
-              collectionName,
-              image: metadata.image,
-              name: metadata.name,
-              description: metadata.description,
-              tokenURI,
-            });
-          }
-        }
-
-        setNfts(nftArray);
-        setLoading(false);
-      } catch (err) {
-        console.error("Error fetching NFTs:", err);
-        setLoading(false);
-        setAlert({ message: "❌ Failed to fetch NFTs", type: "error" });
-        setTimeout(() => setAlert(null), 3000);
-      }
-    };
-
-    fetchOwnedNFTs();
+    loadMyNFTs();
   }, []);
 
-  return (
-    <div className="nft-page">
-      {alert && <SmartAlert message={alert.message} type={alert.type} />}
+  async function loadMyNFTs() {
+    try {
+      setLoading(true);
 
-      {loading ? (
-        <p>Loading your NFTs...</p>
+      // Fetch owned NFTs from NFTCollection contract
+      const ownedNFTs = await fetchNFTData();
+
+      // Attach listing info from the Marketplace contract
+      const enrichedNFTs = await Promise.all(
+        ownedNFTs.map(async (nft) => {
+          const listing = await marketplaceContract.getListing(
+            NFT_COLLECTION_ADDRESS,
+            nft.tokenId
+          );
+
+          const isListed = listing.price > 0n;
+
+          return {
+            ...nft,
+            listing: {
+              isListed,
+              price: isListed ? listing.price : null,
+              seller: listing.seller,
+            },
+          };
+        })
+      );
+
+      setNfts(enrichedNFTs);
+    } catch (err) {
+      console.error("Failed to load NFTs:", err);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="my-nft-page">
+        <p className="my-nft-page__loading">Loading your NFTs...</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="my-nft-page">
+      <h1 className="my-nft-page__title">My NFTs</h1>
+
+      {nfts.length === 0 ? (
+        <p className="my-nft-page__empty">You don’t own any NFTs yet.</p>
       ) : (
-        <div className="nft-grid">
-          {/* Handle the case when no NFTs are found */}
-          {nfts.length === 0 ? (
-            <p>No NFTs found. Start minting some NFTs!</p>
-          ) : (
-            nfts.map((nft) => (
-              <div key={nft.tokenId} className="nft-card">
-                <img src={nft.image} alt={nft.name} />
-                <h3>{nft.name}</h3>
-                <p>{nft.collectionName}</p>
-                <p>{nft.description}</p>
-              </div>
-            ))
-          )}
+        <div className="my-nft-page__grid">
+          {nfts.map((nft) => (
+            <MyNFTCard
+              key={nft.tokenId}
+              nft={nft}
+              onActionComplete={loadMyNFTs}
+            />
+          ))}
         </div>
       )}
     </div>
