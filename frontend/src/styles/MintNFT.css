@@ -2,7 +2,7 @@
    Root / Page
 =========================== */
 
-.create-page {
+.mint-page {
   min-height: 100vh;
   background-color: #121212;
   color: #e5e7eb;
@@ -17,25 +17,45 @@
    Header
 =========================== */
 
-.create-header {
+.mint-header {
   max-width: 720px;
   width: 100%;
   margin-bottom: 32px;
 }
 
-.create-header h1 {
+.mint-header h1 {
   font-size: 32px;
   font-weight: 700;
   margin-bottom: 8px;
 }
 
-.create-header p {
+.mint-header p {
   color: #9ca3af;
   font-size: 15px;
 }
 
 /* ===========================
-   Cards
+   Collection Selection Dropdown
+=========================== */
+
+select {
+  width: 100%;
+  background-color: #0f0f0f;
+  border: 1px solid #2a2a2a;
+  border-radius: 12px;
+  padding: 12px 14px;
+  color: #f9fafb;
+  font-size: 14px;
+  outline: none;
+  margin-bottom: 14px;
+}
+
+select:focus {
+  border-color: #2081e2;
+}
+
+/* ===========================
+   NFT Details Form
 =========================== */
 
 .card {
@@ -54,11 +74,8 @@
   margin-bottom: 16px;
 }
 
-/* ===========================
-   Inputs
-=========================== */
-
-.input {
+.card input,
+.card textarea {
   width: 100%;
   background-color: #0f0f0f;
   border: 1px solid #2a2a2a;
@@ -70,18 +87,14 @@
   margin-bottom: 14px;
 }
 
-.input::placeholder {
+.card input::placeholder,
+.card textarea::placeholder {
   color: #6b7280;
 }
 
-.input:focus {
+.card input:focus,
+.card textarea:focus {
   border-color: #2081e2;
-}
-
-/* Textarea */
-.textarea {
-  min-height: 100px;
-  resize: vertical;
 }
 
 /* ===========================
@@ -109,7 +122,7 @@
 }
 
 /* ===========================
-   Mint Summary
+   Mint Summary Section
 =========================== */
 
 .mint-summary {
@@ -139,7 +152,7 @@
 }
 
 /* ===========================
-   Primary Button
+   Mint Button
 =========================== */
 
 .button-primary {
@@ -169,7 +182,7 @@
 =========================== */
 
 @media (max-width: 640px) {
-  .create-header h1 {
+  .mint-header h1 {
     font-size: 26px;
   }
 

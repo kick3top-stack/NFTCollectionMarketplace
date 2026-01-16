@@ -54,6 +54,9 @@ export default function Navbar() {
             <Link to="/create">Create</Link>
           </li>
           <li>
+            <Link to="/mintNFT">Mint NFT</Link>
+          </li>
+          <li>
             <Link to="/mynfts">MyNFTs</Link>
           </li>
         </nav>

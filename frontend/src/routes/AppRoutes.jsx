@@ -3,6 +3,7 @@ import CollectionNFTPage from "../pages/CollectionNFTPage";
 import Collections from "../pages/Collections";
 import CreateCollection from "../pages/CreateCollection";
 import Home from "../pages/Home";
+import MintNFT from "../pages/MintNFT";
 import MyNFTPage from "../pages/MyNFTPage";
 
 import {
@@ -28,6 +29,7 @@ export default function AppRoutes() {
         }
       />
       <Route path="/mynfts" element={<MyNFTPage />} />
+      <Route path="/mintNFT" element={<MintNFT />} />
 
       {/* <Route path="/explore" element={<Explore />} />
       

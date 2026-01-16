@@ -1,7 +1,9 @@
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import SmartAlert from "../components/common/SmartAlert";
+import "../styles/MintNFT.css";
 import { getNFTContract } from "../utils/contracts";
+import { nftContract } from "../utils/contractSetup";
 import { uploadJSONToIPFS, uploadToIPFS } from "../utils/ipfs";
 
 const MINT_PRICE = "0.01";
@@ -13,19 +15,29 @@ export default function MintNFT() {
   const [loading, setLoading] = useState(false);
   const [alert, setAlert] = useState(null);
   const [existingCollections, setExistingCollections] = useState([]);
+  const [selectedCollection, setSelectedCollection] = useState("");
+  const [isCollectionsLoaded, setIsCollectionsLoaded] = useState(false); // New state to track if collections are loaded
 
   useEffect(() => {
     const fetchCollections = async () => {
-      const contract = getNFTContract();
-      const totalCollections = await contract.totalSupply();
-      const collections = [];
+      const totalTokens = await nftContract.tokenCounter();
+      const set = new Set();
 
-      for (let i = 0; i < totalCollections; i++) {
-        const collection = await contract.getCollection(i);
-        collections.push(collection);
+      for (let i = 0; i < totalTokens; i++) {
+        const name = await nftContract.collections(i);
+        if (name) set.add(name);
       }
 
-      setExistingCollections(collections);
+      const list = [...set];
+      setExistingCollections(list);
+
+      // Set default collection after fetching collections
+      if (list.length > 0) {
+        setSelectedCollection(list[0]);
+      }
+
+      // Mark collections as loaded
+      setIsCollectionsLoaded(true);
     };
 
     fetchCollections();
@@ -74,6 +86,10 @@ export default function MintNFT() {
     }
   };
 
+  if (!isCollectionsLoaded) {
+    return <div className="mint-page">Loading collections...</div>;
+  }
+
   return (
     <div className="mint-page">
       <header className="mint-header">
@@ -83,10 +99,13 @@ export default function MintNFT() {
 
       <div className="card">
         <h2>Select Collection</h2>
-        <select>
+        <select
+          value={selectedCollection}
+          onChange={(e) => setSelectedCollection(e.target.value)}
+        >
           {existingCollections.map((collection, index) => (
-            <option key={index} value={collection.name}>
-              {collection.name}
+            <option key={index} value={collection}>
+              {collection}
             </option>
           ))}
         </select>

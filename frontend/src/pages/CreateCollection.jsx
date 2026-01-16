@@ -1,6 +1,7 @@
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import SmartAlert from "../components/common/SmartAlert";
+import "../styles/create-collection.css";
 import { getNFTContract } from "../utils/contracts";
 import { nftContract } from "../utils/contractSetup";
 import { uploadJSONToIPFS, uploadToIPFS } from "../utils/ipfs";
