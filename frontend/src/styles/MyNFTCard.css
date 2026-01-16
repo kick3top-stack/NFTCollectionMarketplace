@@ -4,15 +4,15 @@
 
 /* Card container */
 .mynft-card {
+  position: relative;
   background-color: #1b1b1b;
-  border-radius: 14px;
+  border-radius: 10px;
   padding: 14px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
   transition: transform 0.25s ease, box-shadow 0.25s ease;
   display: flex;
   flex-direction: column;
   width: 250px;
-  margin: 12px;
 }
 
 .mynft-card:hover {
@@ -48,14 +48,14 @@
 
 /* Text styling */
 .mynft-card__title {
-  margin-top: 12px;
+  margin-top: 10px;
   font-size: 16px;
   font-weight: 600;
   color: #ffffff;
 }
 
 .mynft-card__collection {
-  margin-top: 4px;
+  margin-top: 10px;
   font-size: 13px;
   color: #9ca3af;
 }
@@ -101,7 +101,7 @@
 }
 
 .list-nft-modal {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   right: 0;
@@ -150,5 +150,5 @@
 }
 
 .hidden-element {
-  visibility: hidden;
+  visibility: visible;
 }

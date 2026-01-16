@@ -28,3 +28,7 @@
 .smart-alert.info {
   background-color: #2196f3; /* Blue for info */
 }
+
+.smart-alert.warning {
+  background-color: #e89c11; /* Blue for info */
+}

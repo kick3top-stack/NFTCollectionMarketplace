@@ -49,6 +49,7 @@ export default function CreateCollection() {
         message: "Not enough ETH to mint this NFT",
         type: "error",
       });
+      setTimeout(() => setAlert(null), 3000);
       return;
     }
 
@@ -57,6 +58,7 @@ export default function CreateCollection() {
         message: "Please fill all required fields",
         type: "error",
       });
+      setTimeout(() => setAlert(null), 3000);
       return;
     }
 
