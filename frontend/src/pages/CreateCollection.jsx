@@ -10,6 +10,7 @@ const MINT_PRICE = "0.01";
 
 export default function CreateCollection() {
   console.log("CreateCollection function has been called.");
+
   const [collectionName, setCollectionName] = useState("");
   const [collectionDesc, setCollectionDesc] = useState("");
   const [nftName, setNftName] = useState("");
@@ -43,6 +44,7 @@ export default function CreateCollection() {
     getNFTContract();
   }, []);
 
+  // Handle collection creation and NFT minting
   async function handleCreate() {
     if (!window.ethereum) {
       setAlert({
@@ -65,12 +67,6 @@ export default function CreateCollection() {
     try {
       setLoading(true);
 
-      ///check enough money
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const signer = await provider.getSigner();
-      const userAddress = await signer.getAddress();
-      const nftContract = getNFTContract(signer);
-
       // Check if collection already exists
       if (existingCollections.has(collectionName)) {
         setAlert({
@@ -81,6 +77,12 @@ export default function CreateCollection() {
         return;
       }
 
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const signer = await provider.getSigner();
+      const userAddress = await signer.getAddress();
+      const nftContract = getNFTContract(signer);
+
+      // Check for sufficient ETH balance
       const balance = await provider.getBalance(userAddress);
       if (balance < MINT_PRICE * 10000000000 * 100000000) {
         setAlert({
@@ -92,10 +94,10 @@ export default function CreateCollection() {
         return;
       }
 
-      // Upload image
+      // Upload image to IPFS
       const imageURI = await uploadToIPFS(imageFile);
 
-      // Create metadata
+      // Create metadata for the NFT
       const metadata = {
         name: nftName,
         description: nftDesc,
@@ -105,9 +107,8 @@ export default function CreateCollection() {
       };
 
       const tokenURI = await uploadJSONToIPFS(metadata);
-      console.log(metadata);
 
-      // Mint NFT
+      // Mint the NFT with collection name
       const tx = await nftContract.mintNFT(tokenURI, collectionName, {
         value: ethers.parseEther(MINT_PRICE),
       });
@@ -132,6 +133,8 @@ export default function CreateCollection() {
         <h1>Create a collection</h1>
         <p>Create a new collection by minting your first NFT.</p>
       </header>
+
+      {/* Create Collection Form */}
       <div className="card">
         <h2>Collection details</h2>
 
@@ -149,6 +152,8 @@ export default function CreateCollection() {
           onChange={(e) => setCollectionDesc(e.target.value)}
         />
       </div>
+
+      {/* Mint NFT Form */}
       <div className="card">
         <h2>Your first NFT</h2>
 
@@ -176,6 +181,8 @@ export default function CreateCollection() {
           onChange={(e) => setNftDesc(e.target.value)}
         />
       </div>
+
+      {/* Mint Summary */}
       <div className="mint-summary">
         <div className="summary-row">
           <span>Mint price</span>
@@ -187,9 +194,11 @@ export default function CreateCollection() {
           disabled={loading}
           onClick={handleCreate}
         >
-          {loading ? "Creating..." : "Create collection"}
+          {loading ? "Creating..." : "Create collection and Mint NFT"}
         </button>
       </div>
+
+      {/* Alert */}
       <SmartAlert message={alert?.message} type={alert?.type} />
     </div>
   );
