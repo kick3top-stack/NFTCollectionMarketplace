@@ -1,9 +1,9 @@
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
-import CollectionCard from "./CollectionCard";
+import { Navigation } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
 import "../../styles/FeaturedCollections.css";
+import CollectionCard from "./CollectionCard";
 
 const featuredCollections = [
   {
@@ -27,30 +27,17 @@ const featuredCollections = [
     image:
       "https://i2c.seadn.io/collection/uprising-genesis-emergence/image_type_hero_desktop/11639a43662e7461970427b7e8c358/3911639a43662e7461970427b7e8c358.jpeg?w=2000",
   },
-  {
-    name: "Uprising Genesis",
-    owner: "@uprising",
-    items: 3000,
-    image:
-      "https://image.mux.com/mkY6wsCxpYMp01D818oMjelqylXssC1flvTt1NxIjjgE/thumbnail.jpg?time=0",
-  },
-  {
-    name: "Lil Pudgys",
-    owner: "@lilpudgys",
-    items: 5000,
-    image:
-      "https://i2c.seadn.io/collection/uprising-genesis-emergence/image_type_hero_desktop/11639a43662e7461970427b7e8c358/3911639a43662e7461970427b7e8c358.jpeg?w=2000",
-  },
-  {
-    name: "Uprising Genesis",
-    owner: "@uprising",
-    items: 3000,
-    image:
-      "https://image.mux.com/mkY6wsCxpYMp01D818oMjelqylXssC1flvTt1NxIjjgE/thumbnail.jpg?time=0",
-  },
 ];
 
-export default function FeaturedCollectionsSlider() {
+export default function FeaturedCollectionsSlider({ collections }) {
+  const topCollections = [...collections]
+    .sort((a, b) => b.items - a.items) // Sort by number of items
+    .slice(0, 5); // Get top 5 collections
+
+  if (topCollections.length === 0) {
+    return <p>No collections to display</p>; // Handling empty case
+  }
+
   return (
     <div className="featured-slider-container">
       <Swiper
@@ -67,7 +54,7 @@ export default function FeaturedCollectionsSlider() {
           1400: { slidesPerView: 4 },
         }}
       >
-        {featuredCollections.map((col, idx) => (
+        {topCollections.map((col, idx) => (
           <SwiperSlide key={idx}>
             <CollectionCard
               name={col.name}
