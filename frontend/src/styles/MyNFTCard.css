@@ -152,3 +152,11 @@
 .hidden-element {
   visibility: visible;
 }
+
+.cancel-listing-button {
+  background-color: #c0392b;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}

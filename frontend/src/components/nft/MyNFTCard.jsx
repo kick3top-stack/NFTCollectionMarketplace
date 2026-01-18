@@ -82,64 +82,42 @@ export default function MyNFTCard({ nft, onActionComplete }) {
     }
   }
 
-  //   async function listNFT() {
-  //     // 1. Initial Validation
-  //     if (!listingPrice || isNaN(listingPrice) || Number(listingPrice) <= 0) {
-  //       setAlert({ message: "Please enter a valid price.", type: "warning" });
-  //       return;
-  //     }
+  async function cancelListing() {
+    try {
+      setIsListingLoading(true);
 
-  //     try {
-  //       setIsListingLoading(true);
+      const signer = await provider.getSigner();
+      const marketplaceContract = new ethers.Contract(
+        MARKETPLACE_ADDRESS,
+        marketPlacceAbi.abi,
+        signer
+      );
 
-  //       // Get signer once and use it for all contract connections
-  //       const signer = await provider.getSigner();
-  //       const userAddress = await signer.getAddress();
-  //       const owner = await nftContract.ownerOf(tokenId);
+      const tx = await marketplaceContract.cancelListing(
+        nftContract.target,
+        tokenId
+      );
 
-  //       // 2. Connect Contracts to the Signer
-  //       const connectedNftContract = nftContract.connect(signer);
-  //       const marketplaceContract = new ethers.Contract(
-  //         MARKETPLACE_ADDRESS,
-  //         marketPlacceAbi.abi,
-  //         signer
-  //       );
+      await tx.wait();
 
-  //       // 3. Approval Step (Critical: verify if marketplace needs 'approve' or 'setApprovalForAll')
-  //       // If it's a standard marketplace, use approve(target, tokenId)
-  //       const approveTx = await connectedNftContract.approve(
-  //         MARKETPLACE_ADDRESS,
-  //         tokenId
-  //       );
+      setAlert({
+        message: "Listing canceled successfully.",
+        type: "success",
+      });
 
-  //       await approveTx.wait();
+      onActionComplete(); // refresh NFTs
+    } catch (err) {
+      console.error("Error canceling listing:", err);
+      setAlert({
+        message: err.reason || "Failed to cancel listing.",
+        type: "error",
+      });
+    } finally {
+      setIsListingLoading(false);
+      setTimeout(() => setAlert(null), 3000);
+    }
+  }
 
-  //       // 4. List the Item
-  //       const priceInWei = ethers.parseEther(listingPrice.toString());
-
-  //       // IMPORTANT: Verify your contract ABI.
-  //       // Many marketplaces use: listItem(tokenId, price)
-  //       // Some use: listItem(nftAddress, tokenId, price)
-  //       const tx = await marketplaceContract.listItem(owner, tokenId, priceInWei);
-  //       await tx.wait();
-
-  //       setIsListingModalOpen(false);
-  //       onActionComplete();
-  //     } catch (err) {
-  //       console.error("Error listing NFT:", err);
-
-  //       // 5. Improved Error Handling to catch the real reason
-  //       let errorMsg = "An error occurred while listing the NFT.";
-  //       if (err.code === "CALL_EXCEPTION") {
-  //         errorMsg =
-  //           "Transaction would revert. Check if you are the owner or have already listed this item.";
-  //       }
-
-  //       setAlert({ message: errorMsg, type: "error" });
-  //     } finally {
-  //       setIsListingLoading(false);
-  //     }
-  //   }
   return (
     <>
       <div className="mynft-card">
@@ -160,7 +138,15 @@ export default function MyNFTCard({ nft, onActionComplete }) {
           )}
         </div>
 
-        {!listing.isListed && (
+        {listing.isListed ? (
+          <button
+            className="cancel-listing-button"
+            onClick={cancelListing}
+            disabled={isListingLoading}
+          >
+            {isListingLoading ? "Canceling..." : "Cancel Listing"}
+          </button>
+        ) : (
           <button
             className="list-nft-button"
             onClick={() => setIsListingModalOpen(true)}
