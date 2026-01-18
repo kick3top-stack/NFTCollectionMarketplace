@@ -1,0 +1,197 @@
+/* ===========================
+   Root / Page
+=========================== */
+
+.mint-page {
+  min-height: 100vh;
+  background-color: #121212;
+  color: #e5e7eb;
+  padding: 112px 20px 40px; /* 72px navbar + 40px top spacing */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+/* ===========================
+   Header
+=========================== */
+
+.mint-header {
+  max-width: 720px;
+  width: 100%;
+  margin-bottom: 32px;
+}
+
+.mint-header h1 {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.mint-header p {
+  color: #9ca3af;
+  font-size: 15px;
+}
+
+/* ===========================
+   Collection Selection Dropdown
+=========================== */
+
+select {
+  width: 100%;
+  background-color: #0f0f0f;
+  border: 1px solid #2a2a2a;
+  border-radius: 12px;
+  padding: 12px 14px;
+  color: #f9fafb;
+  font-size: 14px;
+  outline: none;
+  margin-bottom: 14px;
+}
+
+select:focus {
+  border-color: #2081e2;
+}
+
+/* ===========================
+   NFT Details Form
+=========================== */
+
+.card {
+  background-color: #1a1a1a;
+  border: 1px solid #262626;
+  border-radius: 16px;
+  padding: 24px;
+  max-width: 720px;
+  width: 100%;
+  margin-bottom: 24px;
+}
+
+.card h2 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.card input,
+.card textarea {
+  width: 100%;
+  background-color: #0f0f0f;
+  border: 1px solid #2a2a2a;
+  border-radius: 12px;
+  padding: 12px 14px;
+  color: #f9fafb;
+  font-size: 14px;
+  outline: none;
+  margin-bottom: 14px;
+}
+
+.card input::placeholder,
+.card textarea::placeholder {
+  color: #6b7280;
+}
+
+.card input:focus,
+.card textarea:focus {
+  border-color: #2081e2;
+}
+
+/* ===========================
+   Dropzone
+=========================== */
+
+.dropzone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 140px;
+  border: 2px dashed #2f2f2f;
+  border-radius: 14px;
+  background-color: #0f0f0f;
+  color: #9ca3af;
+  font-size: 14px;
+  cursor: pointer;
+  margin-bottom: 16px;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.dropzone:hover {
+  border-color: #2081e2;
+  background-color: #141414;
+}
+
+/* ===========================
+   Mint Summary Section
+=========================== */
+
+.mint-summary {
+  max-width: 720px;
+  width: 100%;
+  background-color: #1a1a1a;
+  border: 1px solid #262626;
+  border-radius: 16px;
+  padding: 20px;
+  margin-top: 8px;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  font-size: 15px;
+}
+
+.summary-row span {
+  color: #9ca3af;
+}
+
+.summary-row strong {
+  color: #f9fafb;
+}
+
+/* ===========================
+   Mint Button
+=========================== */
+
+.button-primary {
+  width: 100%;
+  background-color: #2081e2;
+  color: #ffffff;
+  border: none;
+  border-radius: 14px;
+  padding: 14px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, opacity 0.2s ease;
+}
+
+.button-primary:hover {
+  background-color: #1b6fc2;
+}
+
+.button-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ===========================
+   Responsive
+=========================== */
+
+@media (max-width: 640px) {
+  .mint-header h1 {
+    font-size: 26px;
+  }
+
+  .card,
+  .mint-summary {
+    padding: 18px;
+  }
+
+  .dropzone {
+    height: 120px;
+  }
+}

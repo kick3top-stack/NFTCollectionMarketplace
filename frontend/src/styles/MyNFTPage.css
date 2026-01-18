@@ -1,0 +1,42 @@
+/* =========================
+   MyNFTPage Styles
+   ========================= */
+
+/* Page container */
+.my-nft-page {
+  padding: 90px 24px 24px; /* top padding avoids 72px navbar + spacing */
+  min-height: 100vh;
+  background-color: #121212;
+  color: #fff;
+}
+
+/* Page title */
+.my-nft-page__title {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 24px;
+}
+
+/* Grid of NFT cards */
+.my-nft-page__grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: flex-start;
+}
+
+/* Loading state */
+.my-nft-page__loading {
+  font-size: 16px;
+  color: #aaa;
+  text-align: center;
+  margin-top: 40px;
+}
+
+/* Empty state */
+.my-nft-page__empty {
+  font-size: 16px;
+  color: #888;
+  text-align: center;
+  margin-top: 40px;
+}

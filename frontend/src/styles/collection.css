@@ -1,8 +1,13 @@
 .collection-header {
-  padding: 20px 24px;
-  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  padding: 20px 0;
   color: white;
-  margin-bottom: 30px;
+  font-family: "gtAmericaMono", "gtAmericaMono Fallback", ui-monospace,
+    SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New,
+    monospace;
+  font-size: 20px;
 }
 
 .collection-title {

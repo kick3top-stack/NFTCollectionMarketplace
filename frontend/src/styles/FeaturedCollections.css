@@ -1,7 +1,7 @@
 /* Container for the slider */
 .featured-slider-container {
   width: 100%;
-  margin: 40px 0;
+  max-width: 1400px;
   padding: 0 40px; /* padding to prevent cards from being cut off */
   box-sizing: border-box;
 }
@@ -36,12 +36,12 @@
 /* Swiper navigation arrows */
 .featured-slider-container .swiper-button-next,
 .featured-slider-container .swiper-button-prev {
-  color: #f50;           /* arrow color */
+  color: #f50; /* arrow color */
   width: 30px;
   height: 30px;
   padding: 10px;
   top: 50%;
-  right:10px;
+  right: 10px;
   transform: translateY(-50%);
   background: rgba(255, 85, 0, 0.15);
   border-radius: 50%;
@@ -75,4 +75,3 @@
     max-width: 90%;
   }
 }
-

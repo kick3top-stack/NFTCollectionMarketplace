@@ -1,12 +1,15 @@
-import { useState, useEffect } from "react";
-import useWallet from "../../hooks/useWallet";
+import { useEffect, useState } from "react";
+// import useWallet from "../../hooks/useWallet";
 import "../../styles/navbar.css";
 
 import { Link } from "react-router-dom";
+import { connectWalletAndGetBalance } from "../../services/wallet";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
-  const { account, balance, connectWallet } = useWallet();
+  const [account, setAccount] = useState("");
+  const [balance, setBalance] = useState("");
+  const [networkName, setNetwork] = useState("");
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
@@ -14,10 +17,23 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  const connectWallet = async () => {
+    try {
+      const data = await connectWalletAndGetBalance();
+
+      if (!data) return;
+
+      setAccount(data.address);
+      setBalance(data.balance);
+      setNetwork(data.networkName);
+    } catch (error) {
+      console.error("Connection failed:", error);
+    }
+  };
+
   return (
     <header className={`navbar ${scrolled ? "scrolled" : ""}`}>
       <div className="navbar-inner">
-
         {/* Left */}
         <div className="navbar-left">
           <div className="logo">
@@ -32,22 +48,33 @@ export default function Navbar() {
             <Link to="/">Home</Link>
           </li>
           <li>
-            <Link to="/collections">Collections</Link>
+            <Link to="/collections">Marketplace</Link>
           </li>
-          <a href="#">Create</a>
-          <a href="#">Stats</a>
+          <li>
+            <Link to="/create">Create</Link>
+          </li>
+          <li>
+            <Link to="/mintNFT">Mint NFT</Link>
+          </li>
+          <li>
+            <Link to="/mynfts">MyNFTs</Link>
+          </li>
         </nav>
 
         {/* Right */}
         <div className="navbar-right">
           <button className="wallet-btn" onClick={connectWallet}>
             <>
-                { account ? `${account.slice(0, 6)}...${account.slice(-4) }` + "->" + `${Number(balance).toFixed(3)}` + "ETH"
+              {account
+                ? `${account.slice(0, 6)}...${account.slice(-4)}` +
+                  "->" +
+                  `${Number(balance).toFixed(3)}` +
+                  "ETH in " +
+                  `${networkName}`
                 : "Connect Wallet"}
             </>
-            </button>
+          </button>
         </div>
-
       </div>
     </header>
   );

@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react";
-import { ethers } from "ethers";
-import { CHAIN_INFO } from "../config/chains";
-import { connectWalletAndGetBalance } from "../config/wallet";
+import { connectWalletAndGetBalance } from "../services/wallet";
 
 export default function useWallet() {
    const [address, setAddress] = useState(null);
@@ -27,9 +25,18 @@ export default function useWallet() {
     }
   };
 
+  connectWallet();
+
+  console.log({
+        address,
+        balance,
+        network
+    });
+
   return ( {
-    address, 
-    balance, 
-    network}
+        address,
+        balance,
+        network
+    }
 );
 }

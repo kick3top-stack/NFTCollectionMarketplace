@@ -5,7 +5,6 @@
   color: white;
 }
 
-
 /* Grid */
 .collection-grid {
   display: grid;
@@ -19,7 +18,8 @@
 .collection-card {
   background: #111526;
   padding: 10px;
-  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
   overflow: hidden;
   cursor: pointer;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -37,6 +37,8 @@
   padding-top: 100%; /* square ratio */
   background-size: cover;
   background-position: center;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 5px;
 }
 
 .collection-info {
@@ -96,7 +98,7 @@
 
 /* Header */
 .collection-header h2 {
-  font-size: 1.6rem;       /* smaller than before */
+  font-size: 1.6rem; /* smaller than before */
   font-weight: 700;
   text-align: center;
   line-height: 1.2;

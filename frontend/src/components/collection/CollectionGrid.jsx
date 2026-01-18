@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import CollectionCard from "./CollectionCard";
 import "../../styles/CollectionGrid.css";
 
@@ -20,10 +20,10 @@ export default function CollectionsGrid({ collections }) {
 
   const handlePageChange = (page) => {
     if (page >= 1 && page <= totalPages && page !== currentPage) {
-      setIsAnimating(true);      // start animation
+      setIsAnimating(true); // start animation
       setTimeout(() => {
         setCurrentPage(page);
-        setIsAnimating(false);   // reset animation
+        setIsAnimating(false); // reset animation
       }, 300); // match CSS transition duration
     }
   };
@@ -63,7 +63,11 @@ export default function CollectionsGrid({ collections }) {
       </div>
 
       {/* Grid with animation */}
-      <div className={`collections-grid page-background ${isAnimating ? "fade-out" : "fade-in"}`}>
+      <div
+        className={`collections-grid page-background ${
+          isAnimating ? "fade-out" : "fade-in"
+        }`}
+      >
         {currentCollections.map((col, idx) => (
           <CollectionCard
             key={idx}
@@ -81,10 +85,16 @@ export default function CollectionsGrid({ collections }) {
       {/* Pagination */}
       {totalPages > 1 && (
         <div className="pagination">
-          <button onClick={() => handlePageChange(1)} disabled={currentPage === 1}>
+          <button
+            onClick={() => handlePageChange(1)}
+            disabled={currentPage === 1}
+          >
             &lt;&lt;
           </button>
-          <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
+          <button
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+          >
             &lt;
           </button>
           {getVisiblePages().map((page) => (
@@ -96,10 +106,16 @@ export default function CollectionsGrid({ collections }) {
               {page}
             </button>
           ))}
-          <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>
+          <button
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+          >
             &gt;
           </button>
-          <button onClick={() => handlePageChange(totalPages)} disabled={currentPage === totalPages}>
+          <button
+            onClick={() => handlePageChange(totalPages)}
+            disabled={currentPage === totalPages}
+          >
             &gt;&gt;
           </button>
         </div>

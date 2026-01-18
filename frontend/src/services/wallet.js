@@ -1,56 +1,47 @@
-import { useState, useEffect } from "react";
 import { ethers } from "ethers";
 
-export default function WalletConnect({ onWalletConnected }) {
-  const [walletAddress, setWalletAddress] = useState("");
+/**
+ * Connect wallet and read ETH balance
+ */
+export async function connectWalletAndGetBalance() {
+  // 1. Check MetaMask
+  if (!window.ethereum) {
+    alert("MetaMask not installed");
+    return null;
+  }
 
-  // Connect wallet
-  const connectWallet = async () => {
-    if (!window.ethereum) {
-      alert("MetaMask is not installed!");
-      return;
-    }
+  // 2. Create provider (read-only access)
+  const provider = new ethers.BrowserProvider(window.ethereum);
 
-    try {
-      const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
-      const account = accounts[0];
-      setWalletAddress(account);
-      if (onWalletConnected) onWalletConnected(account);
-    } catch (err) {
-      console.error(err);
-    }
+  // 3. Ask user to connect wallet
+  await provider.send("eth_requestAccounts", []);
+
+  // 4. Get signer (wallet)
+  const signer = await provider.getSigner();
+
+  // 5. Get wallet address
+  const address = await signer.getAddress();
+
+  // 6. Read ETH balance (BIG NUMBER in wei)
+  const balanceWei = await provider.getBalance(address);
+
+  // 7. Convert wei → ETH (human readable)
+  const balanceEth = ethers.formatEther(balanceWei);
+
+  // 8. Get network info (Mainnet / Sepolia / etc.)
+  const network = await provider.getNetwork();
+
+  console.log({
+    address, // Wallet address
+    balance: balanceEth, // ETH or Sepolia ETH
+    chainId: Number(network.chainId),
+    networkName: network.name,
+  });
+
+  return {
+    address, // Wallet address
+    balance: balanceEth, // ETH or Sepolia ETH
+    chainId: Number(network.chainId),
+    networkName: network.name,
   };
-
-  // Handle account or network change
-  useEffect(() => {
-    if (window.ethereum) {
-      window.ethereum.on("accountsChanged", (accounts) => {
-        setWalletAddress(accounts[0] || "");
-        if (onWalletConnected) onWalletConnected(accounts[0] || "");
-      });
-      window.ethereum.on("chainChanged", () => {
-        window.location.reload(); // reload page on network change
-      });
-    }
-    return () => {
-      if (window.ethereum?.removeListener) {
-        window.ethereum.removeListener("accountsChanged", () => {});
-        window.ethereum.removeListener("chainChanged", () => {});
-      }
-    };
-  }, []);
-
-  return (
-    <div>
-      {walletAddress ? (
-        <button className="wallet-btn">
-          {walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}
-        </button>
-      ) : (
-        <button className="wallet-btn" onClick={connectWallet}>
-          Connect Wallet
-        </button>
-      )}
-    </div>
-  );
 }
