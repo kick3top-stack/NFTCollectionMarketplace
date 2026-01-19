@@ -1,29 +1,20 @@
+// src/redux/metaSlice.js
 import { createSlice } from "@reduxjs/toolkit";
 
-// Initial state: empty array of meta
 const initialState = {
-  metaFiles: [], // Array of metadata objects
+  metaFiles: [], // This will store all metadata files
 };
 
-export const metaSlice = createSlice({
+const metaSlice = createSlice({
   name: "meta",
   initialState,
   reducers: {
     setMetaFiles: (state, action) => {
+      // Clear existing state and add the new meta files
       state.metaFiles = action.payload;
-    },
-    addMetaFile: (state, action) => {
-      state.metaFiles.push(action.payload);
-    },
-    updateMetaFile: (state, action) => {
-      const index = state.metaFiles.findIndex(
-        (m) => m.tokenId === action.payload.tokenId
-      );
-      if (index !== -1) state.metaFiles[index] = action.payload;
     },
   },
 });
 
-export const { setMetaFiles, addMetaFile, updateMetaFile } = metaSlice.actions;
-
+export const { setMetaFiles } = metaSlice.actions;
 export default metaSlice.reducer;

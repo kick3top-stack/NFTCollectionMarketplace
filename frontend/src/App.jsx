@@ -1,23 +1,23 @@
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { Provider, useDispatch } from "react-redux";
 import Navbar from "./components/layout/Navbar";
+import { store } from "./redux/store";
 import AppRoutes from "./routes/AppRoutes";
-import { loadMetaFiles } from "./utils/loadMeta";
+import { nftContract } from "./utils/contractSetup";
+import { loadMetaFiles } from "./utils/loadMeta"; // Import the function
 
 export default function App() {
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    loadMetaFiles(dispatch).finally(() => setLoading(false));
-  }, [dispatch]);
-
-  if (loading) return <div>Loading metadata...</div>;
+    loadMetaFiles(dispatch, nftContract); // Dispatch meta files loading
+  }, [dispatch, nftContract]);
 
   return (
-    <>
+    <Provider store={store}>
       <Navbar />
       <AppRoutes />
-    </>
+    </Provider>
   );
 }
