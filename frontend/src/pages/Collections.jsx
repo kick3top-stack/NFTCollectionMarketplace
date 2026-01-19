@@ -1,48 +1,9 @@
 import { useState } from "react";
+import { useSelector } from "react-redux"; // Use Redux state to access metaFiles
 import CollectionGrid from "../components/collection/CollectionGrid";
 import CollectionHeader from "../components/collection/CollectionHeader";
 import FeaturedCollectionsSlider from "../components/collection/FeaturedCollectionsSlider";
 import "../styles/CollectionsPage.css";
-import { nftContract } from "../utils/contractSetup";
-
-const total = Number(await nftContract.tokenCounter());
-
-const collectionMap = {};
-
-for (let tokenId = 0; tokenId < total; tokenId++) {
-  const name = await nftContract.collections(tokenId);
-  if (!name) continue;
-
-  if (!collectionMap[name]) {
-    collectionMap[name] = {
-      name,
-      owner: null,
-      items: 0,
-      image: null,
-    };
-  }
-
-  collectionMap[name].items += 1;
-}
-
-for (const collectionName in collectionMap) {
-  for (let tokenId = 0; tokenId < total; tokenId++) {
-    const name = await nftContract.collections(tokenId);
-    if (name !== collectionName) continue;
-
-    const tokenURI = await nftContract.tokenURI(tokenId);
-    const metadata = await fetch(tokenURI).then((r) => r.json());
-
-    const owner = await nftContract.ownerOf(tokenId);
-
-    collectionMap[collectionName].image = metadata.image;
-    collectionMap[collectionName].owner = owner.slice(0, 6) + "...";
-
-    break;
-  }
-}
-
-const allCollections = Object.values(collectionMap);
 
 export default function Collections() {
   const [filters, setFilters] = useState({
@@ -51,10 +12,35 @@ export default function Collections() {
     sort: "Newest",
   });
 
-  const handleFilterChange = (newFilters) => {
-    setFilters(newFilters);
-    // TODO: Fetch filtered collections via API / Web3 contract
-  };
+  // Access metaFiles directly from Redux
+  const metaFiles = useSelector((state) => state.meta.metaFiles);
+
+  // If metadata is not loaded yet, we can show a loading message
+  if (metaFiles.length === 0) {
+    return <div className="mint-page">Loading collections...</div>;
+  }
+
+  // Group collections based on metaFiles (no need to fetch from contract again)
+  const collectionMap = {};
+
+  metaFiles.forEach((meta) => {
+    const { collectionName, image, owner } = meta;
+
+    // Initialize collection if not yet created
+    if (!collectionMap[collectionName]) {
+      collectionMap[collectionName] = {
+        name: collectionName,
+        owner: owner, // owner is already available in metadata
+        items: 1,
+        image: image, // image is already available in metadata
+      };
+    } else {
+      collectionMap[collectionName].items += 1;
+    }
+  });
+
+  // Convert collectionMap to an array
+  const allCollections = Object.values(collectionMap);
 
   return (
     <section className="collections-page">

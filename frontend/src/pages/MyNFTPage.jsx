@@ -1,33 +1,49 @@
+import { ethers } from "ethers";
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import MyNFTCard from "../components/nft/MyNFTCard";
 import "../styles/MyNFTPage.css";
 import {
   marketplaceContract,
   NFT_COLLECTION_ADDRESS,
 } from "../utils/contractSetup";
-import { fetchNFTData } from "../utils/fetchNFTData";
 
 export default function MyNFTPage() {
   const [nfts, setNfts] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Pull metadata from Redux (same source as Collections.jsx)
+  const metaFiles = useSelector((state) => state.meta.metaFiles);
+
   useEffect(() => {
     loadMyNFTs();
-  }, []);
+  }, [metaFiles]);
 
   async function loadMyNFTs() {
     try {
       setLoading(true);
 
-      // Fetch owned NFTs from NFTCollection contract
-      const ownedNFTs = await fetchNFTData();
+      if (!metaFiles || metaFiles.length === 0) {
+        setNfts([]);
+        return;
+      }
 
-      // Attach listing info from the Marketplace contract
+      // Get connected wallet address
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const signer = await provider.getSigner();
+      const userAddress = (await signer.getAddress()).toLowerCase();
+
+      // Filter NFTs owned by the user
+      const ownedNFTs = metaFiles.filter((nft) =>
+        nft.owner.toLowerCase().startsWith(userAddress.slice(0, 6)),
+      );
+
+      // Attach listing info from Marketplace
       const enrichedNFTs = await Promise.all(
         ownedNFTs.map(async (nft) => {
           const listing = await marketplaceContract.getListing(
             NFT_COLLECTION_ADDRESS,
-            nft.tokenId
+            nft.tokenId,
           );
 
           const isListed = listing.price > 0n;
@@ -40,7 +56,7 @@ export default function MyNFTPage() {
               seller: listing.seller,
             },
           };
-        })
+        }),
       );
 
       setNfts(enrichedNFTs);

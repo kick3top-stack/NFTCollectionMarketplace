@@ -103,6 +103,30 @@
   transform: translateY(-1px);
 }
 
+.withdraw-btn {
+  background: #27ae60;
+  color: white;
+  margin-right: 10px;
+  padding: 6px 10px;
+  border-radius: 6px;
+}
+
+.withdraw-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.withdraw-modal .modal-content {
+  background: #111;
+  padding: 20px;
+  border-radius: 10px;
+  width: 300px;
+}
+
 /* Mobile */
 @media (max-width: 900px) {
   .navbar-center {

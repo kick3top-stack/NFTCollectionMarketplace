@@ -1,0 +1,7 @@
+{
+  "tokenId": 0,
+  "name": "CryptoCat",
+  "description": "First NFT in the collection",
+  "image": "/images/cryptocat.png",
+  "collectionName": "Cats"
+}
