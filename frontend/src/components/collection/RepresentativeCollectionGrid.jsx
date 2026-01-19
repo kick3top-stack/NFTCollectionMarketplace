@@ -1,3 +1,5 @@
+////src/components/collection/RepresentativeCollectionGrid.jsx///
+
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import CollectionCard from "./CollectionCard";
@@ -16,12 +18,12 @@ export default function CollectionGrid() {
 
     // Group metaFiles by collectionName
     metaFiles.forEach((meta) => {
-      const { collectionName, image, owner } = meta;
+      const { collectionName, image, owner } = meta; // owner is full address
 
       if (!collectionMap[collectionName]) {
         collectionMap[collectionName] = {
           name: collectionName,
-          owner: owner, // Already stored in Redux
+          owner: owner.slice(0, 6) + "...", // full address for logic
           items: 1,
           image: image,
         };

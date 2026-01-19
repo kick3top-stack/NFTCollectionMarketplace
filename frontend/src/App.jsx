@@ -1,3 +1,5 @@
+///src/App.jsx//////
+
 import { useEffect, useState } from "react";
 import { Provider, useDispatch } from "react-redux";
 import Navbar from "./components/layout/Navbar";

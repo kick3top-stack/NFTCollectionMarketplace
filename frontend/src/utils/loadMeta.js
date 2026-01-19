@@ -1,3 +1,5 @@
+/////src/utils/loadMeta.js//////
+
 import { setMetaFiles } from "../redux/metaSlice";
 
 export const loadMetaFiles = async (dispatch, nftContract) => {
@@ -15,7 +17,8 @@ export const loadMetaFiles = async (dispatch, nftContract) => {
         metaFiles.push({
           tokenId,
           collectionName,
-          owner: owner.slice(0, 6) + "...",
+          owner, // keep full address here
+          displayOwner: owner.slice(0, 6) + "...",
           ...metadata,
         });
       } catch (err) {

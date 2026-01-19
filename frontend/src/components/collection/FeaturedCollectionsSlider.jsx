@@ -34,7 +34,7 @@ export default function FeaturedCollectionsSlider({ collections }) {
           <SwiperSlide key={idx}>
             <CollectionCard
               name={col.name}
-              owner={col.owner}
+              owner={col.owner.slice(0, 6) + "..."}
               items={col.items}
               image={col.image}
             />

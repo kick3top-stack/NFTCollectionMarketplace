@@ -1,28 +1,66 @@
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import MyNFTCard from "../components/nft/MyNFTCard";
 import "../styles/MyNFTPage.css";
 import {
   marketplaceContract,
   NFT_COLLECTION_ADDRESS,
 } from "../utils/contractSetup";
-import { fetchNFTData } from "../utils/fetchNFTData";
 
 export default function MyNFTPage() {
   const [nfts, setNfts] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Get all NFT metadata from Redux
+  const metaFiles = useSelector((state) => state.meta.metaFiles);
+
+  // Use the connected wallet address (from MetaMask or other sources)
+  const [userAddress, setUserAddress] = useState("");
+
+  // Detect wallet address on page load
+  // Detect wallet address on page load
   useEffect(() => {
-    loadMyNFTs();
+    const getWalletAddress = async () => {
+      try {
+        if (!window.ethereum) throw new Error("No Ethereum wallet detected");
+
+        const accounts = await window.ethereum.request({
+          method: "eth_requestAccounts",
+        });
+        if (accounts.length === 0) throw new Error("No wallet connected");
+
+        setUserAddress(accounts[0]);
+      } catch (err) {
+        console.error("No wallet connected", err);
+        setUserAddress(""); // fallback
+      }
+    };
+
+    getWalletAddress();
   }, []);
+
+  // Trigger NFT loading when both `metaFiles` and `userAddress` are ready
+  useEffect(() => {
+    if (!metaFiles.length || !userAddress) return; // Wait for both
+    loadMyNFTs();
+    console.log("MyNFTPage------->", metaFiles);
+  }, [metaFiles, userAddress]); // Trigger when either changes
 
   async function loadMyNFTs() {
     try {
       setLoading(true);
 
-      // Fetch owned NFTs from NFTCollection contract
-      const ownedNFTs = await fetchNFTData();
+      // Filter NFTs owned by the user
+      const ownedNFTs = metaFiles.filter(
+        (nft) => nft.owner.toLowerCase() === userAddress.toLowerCase()
+      );
 
-      // Attach listing info from the Marketplace contract
+      if (ownedNFTs.length === 0) {
+        setLoading(false);
+        return;
+      }
+
+      // Attach listing info from Marketplace contract
       const enrichedNFTs = await Promise.all(
         ownedNFTs.map(async (nft) => {
           const listing = await marketplaceContract.getListing(
