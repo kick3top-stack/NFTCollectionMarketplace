@@ -1,3 +1,4 @@
+import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import MyNFTCard from "../components/nft/MyNFTCard";
@@ -11,61 +12,38 @@ export default function MyNFTPage() {
   const [nfts, setNfts] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Get all NFT metadata from Redux
+  // Pull metadata from Redux (same source as Collections.jsx)
   const metaFiles = useSelector((state) => state.meta.metaFiles);
 
-  // Use the connected wallet address (from MetaMask or other sources)
-  const [userAddress, setUserAddress] = useState("");
-
-  // Detect wallet address on page load
-  // Detect wallet address on page load
   useEffect(() => {
-    const getWalletAddress = async () => {
-      try {
-        if (!window.ethereum) throw new Error("No Ethereum wallet detected");
-
-        const accounts = await window.ethereum.request({
-          method: "eth_requestAccounts",
-        });
-        if (accounts.length === 0) throw new Error("No wallet connected");
-
-        setUserAddress(accounts[0]);
-      } catch (err) {
-        console.error("No wallet connected", err);
-        setUserAddress(""); // fallback
-      }
-    };
-
-    getWalletAddress();
-  }, []);
-
-  // Trigger NFT loading when both `metaFiles` and `userAddress` are ready
-  useEffect(() => {
-    if (!metaFiles.length || !userAddress) return; // Wait for both
     loadMyNFTs();
-    console.log("MyNFTPage------->", metaFiles);
-  }, [metaFiles, userAddress]); // Trigger when either changes
+  }, [metaFiles]);
 
   async function loadMyNFTs() {
     try {
       setLoading(true);
 
-      // Filter NFTs owned by the user
-      const ownedNFTs = metaFiles.filter(
-        (nft) => nft.owner.toLowerCase() === userAddress.toLowerCase()
-      );
-
-      if (ownedNFTs.length === 0) {
-        setLoading(false);
+      if (!metaFiles || metaFiles.length === 0) {
+        setNfts([]);
         return;
       }
 
-      // Attach listing info from Marketplace contract
+      // Get connected wallet address
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const signer = await provider.getSigner();
+      const userAddress = (await signer.getAddress()).toLowerCase();
+
+      // Filter NFTs owned by the user
+      const ownedNFTs = metaFiles.filter((nft) =>
+        nft.owner.toLowerCase().startsWith(userAddress.slice(0, 6)),
+      );
+
+      // Attach listing info from Marketplace
       const enrichedNFTs = await Promise.all(
         ownedNFTs.map(async (nft) => {
           const listing = await marketplaceContract.getListing(
             NFT_COLLECTION_ADDRESS,
-            nft.tokenId
+            nft.tokenId,
           );
 
           const isListed = listing.price > 0n;
@@ -78,7 +56,7 @@ export default function MyNFTPage() {
               seller: listing.seller,
             },
           };
-        })
+        }),
       );
 
       setNfts(enrichedNFTs);
