@@ -1,201 +1,129 @@
-/* ------------------- Hero Slider Section ------------------- */
-.hero-slider {
+.single-slide-container {
   position: relative;
   width: 100%;
-  height: 60vh; /* Adjust hero height */
+  height: 90vh;
   overflow: hidden;
+  background-color: #000;
 }
 
-/* Swiper wrapper */
-.hero-swiper {
-  width: 100%;
-  height: 100%;
-}
-
-/* Each slide */
-.hero-swiper .slide {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  background-size: cover;
-  background-position: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Dark overlay for readability */
-.hero-swiper .dark-overlay {
+/* Fire Layer */
+.fire-layer {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(11, 15, 25, 0.6);
+  background: linear-gradient(135deg, #e83f2a, #ff6a00, #ffcb00);
+  animation: firePulse 2s infinite alternate;
   z-index: 1;
 }
 
-/* Glow effect for style */
-.hero-swiper .glow {
+/* Lightning Layer */
+.lightning-layer {
   position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    315deg,
+    rgba(0, 128, 255, 0.8),
+    rgba(0, 0, 255, 0.5)
+  );
+  animation: lightningFlicker 2s infinite alternate;
+  z-index: 2;
+  mix-blend-mode: screen; /* creates natural blending */
+}
+
+/* Center Clash Overlay */
+.clash-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   background: radial-gradient(
     circle at center,
-    rgba(32, 129, 226, 0.3),
-    transparent 70%
+    rgba(255, 255, 255, 0.1) 0%,
+    transparent 60%
   );
-  z-index: 2;
+  z-index: 3;
   pointer-events: none;
-  animation: glowMove 10s linear infinite;
+  animation: clashPulse 1.5s infinite alternate;
 }
 
-@keyframes glowMove {
+/* Animations */
+@keyframes firePulse {
   0% {
-    transform: rotate(0deg) translateX(0);
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.2);
   }
   100% {
-    transform: rotate(360deg) translateX(0);
+    filter: brightness(1);
   }
 }
 
-/* Content inside slide */
-.hero-swiper .content {
-  position: relative;
-  z-index: 3;
-  text-align: center;
-  max-width: 900px;
-  color: white;
-  padding: 0 20px;
-}
-
-/* Animate text */
-.hero-swiper .content h1,
-.hero-swiper .content p {
-  margin: 0;
-  opacity: 0;
-  transform: translateY(20px);
-  animation-fill-mode: forwards;
-}
-
-.hero-swiper .content .animate {
-  animation: fadeUp 1s ease forwards;
-}
-
-.hero-swiper .content .animate.delay {
-  animation-delay: 0.5s;
-}
-
-.hero-swiper .content .animate.delay-2 {
-  animation-delay: 1s;
-}
-
-@keyframes fadeUp {
-  to {
+@keyframes lightningFlicker {
+  0% {
+    opacity: 0.6;
+  }
+  50% {
     opacity: 1;
-    transform: translateY(0);
+  }
+  100% {
+    opacity: 0.6;
   }
 }
 
-/* Buttons */
-.hero-swiper .buttons {
-  margin-top: 20px;
-  display: flex;
-  gap: 16px;
-  justify-content: center;
+@keyframes clashPulse {
+  0% {
+    opacity: 0.1;
+  }
+  50% {
+    opacity: 0.2;
+  }
+  100% {
+    opacity: 0.1;
+  }
 }
 
-.hero-swiper .btn {
-  padding: 12px 28px;
-  border-radius: 12px;
-  font-weight: 600;
-  cursor: pointer;
+/* Content */
+.slide-content {
+  position: relative;
+  z-index: 5;
+  text-align: center;
+  color: #fff;
+  padding: 2rem;
+}
+
+.title {
+  font-size: 3rem;
+  font-weight: bold;
+  text-shadow: 0 0 10px #ff4500, 0 0 20px #00ffff;
+}
+
+.description {
+  margin-top: 1rem;
+  font-size: 1.5rem;
+  text-shadow: 0 0 5px #00ffff;
+}
+
+.explore-button {
+  margin-top: 2rem;
+  padding: 1rem 2rem;
+  border-radius: 10px;
+  font-weight: bold;
+  background: linear-gradient(135deg, #ff4500, #ff7f00);
+  box-shadow: 0 0 15px #ff4500;
+  color: #000;
   border: none;
-  transition: all 0.3s ease;
+  cursor: pointer;
+  transition: 0.3s;
 }
 
-.hero-swiper .btn.primary {
-  background: linear-gradient(135deg, #2081e2, #4f46e5);
-  color: white;
-}
-
-.hero-swiper .btn.primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 0 20px rgba(32, 129, 226, 0.6);
-}
-
-.hero-swiper .btn.secondary {
-  background: rgba(255, 255, 255, 0.1);
-  color: #c7d2fe;
-}
-
-.hero-swiper .btn.secondary:hover {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-/* Swiper navigation buttons (small size) */
-.hero-swiper .swiper-button-prev,
-.hero-swiper .swiper-button-next {
-  width: 40px;
-  height: 40px;
-  padding: 10px;
-  background: rgba(32, 33, 40, 0.6);
-  color: white;
-  border-radius: 50%;
-  top: 50%;
-  transform: translateY(-50%);
-  transition: all 0.3s ease;
-}
-
-.hero-swiper .swiper-button-prev:hover,
-.hero-swiper .swiper-button-next:hover {
-  background: rgba(32, 129, 226, 0.8);
-  transform: translateY(-50%) scale(1.1);
-}
-
-.hero-swiper .swiper-button-prev::after,
-.hero-swiper .swiper-button-next::after {
-  font-size: 15px; /* smaller arrow */
-}
-
-.hero-swiper .swiper-button-prev {
-  left: 10px;
-}
-
-.hero-swiper .swiper-button-next {
-  right: 10px;
-}
-
-/* Optional: hide default Swiper outline */
-.hero-swiper .swiper-button-prev:focus,
-.hero-swiper .swiper-button-next:focus {
-  outline: none;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-  .hero-slider {
-    height: 60vh;
-  }
-
-  .hero-swiper .swiper-button-prev,
-  .hero-swiper .swiper-button-next {
-    width: 32px;
-    height: 32px;
-  }
-
-  .hero-swiper .swiper-button-prev::after,
-  .hero-swiper .swiper-button-next::after {
-    font-size: 15px;
-  }
-
-  .hero-swiper .content h1 {
-    font-size: 1.5rem;
-  }
-
-  .hero-swiper .content p {
-    font-size: 0.9rem;
-  }
+.explore-button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 25px #00ffff;
 }

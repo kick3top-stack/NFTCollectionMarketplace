@@ -22,7 +22,6 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // 🔹 Check owner + contract balance
   const checkOwnerAndBalance = async (address) => {
     const owner = await nftContract.owner();
     setIsOwner(owner.toLowerCase() === address.toLowerCase());
@@ -46,7 +45,6 @@ export default function Navbar() {
     }
   };
 
-  // 🔹 Withdraw function
   const withdrawETH = async () => {
     try {
       setLoadingWithdraw(true);
@@ -69,18 +67,20 @@ export default function Navbar() {
 
   return (
     <>
-      <header className={`navbar ${scrolled ? "scrolled" : ""}`}>
-        <div className="navbar-inner">
+      <header
+        className={`navbar-container ${scrolled ? "navbar-scrolled" : ""}`}
+      >
+        <div className="navbar-content">
           {/* Left */}
-          <div className="navbar-left">
-            <div className="logo">
-              <span className="logo-icon">◆</span>
-              <span className="logo-text">MyNFT</span>
+          <div className="navbar-left-side">
+            <div className="logo-container">
+              <span className="logo-symbol">◆</span>
+              <span className="logo-name">MyNFT</span>
             </div>
           </div>
 
           {/* Center */}
-          <nav className="navbar-center">
+          <nav className="navbar-middle">
             <li>
               <Link to="/">Home</Link>
             </li>
@@ -99,20 +99,23 @@ export default function Navbar() {
           </nav>
 
           {/* Right */}
-          <div className="navbar-right">
+          <div className="navbar-right-side">
             {isOwner && (
               <button
-                className="withdraw-btn"
+                className="withdraw-button neon-effect"
                 onClick={() => setShowWithdrawModal(true)}
               >
                 Withdraw
               </button>
             )}
 
-            <button className="wallet-btn" onClick={connectWallet}>
+            <button
+              className="wallet-button neon-effect"
+              onClick={connectWallet}
+            >
               {account
                 ? `${account.slice(0, 6)}...${account.slice(-4)} → ${Number(
-                    balance
+                    balance,
                   ).toFixed(3)} ETH (${networkName})`
                 : "Connect Wallet"}
             </button>
@@ -122,22 +125,26 @@ export default function Navbar() {
 
       {/* 🔔 Withdraw Modal */}
       {showWithdrawModal && (
-        <div className="withdraw-modal">
-          <div className="modal-content">
+        <div className="withdraw-modal-container">
+          <div className="withdraw-modal-content neon-border">
             <h3>Withdraw ETH</h3>
             <p>
               Available to withdraw:
               <strong> {contractBalance} ETH</strong>
             </p>
 
-            <div className="modal-actions">
+            <div className="withdraw-modal-actions">
               <button
+                className="neon-effect"
                 onClick={withdrawETH}
                 disabled={loadingWithdraw || contractBalance === "0.0"}
               >
                 {loadingWithdraw ? "Withdrawing..." : "Yes, Withdraw"}
               </button>
-              <button onClick={() => setShowWithdrawModal(false)}>
+              <button
+                className="neon-effect cancel-button"
+                onClick={() => setShowWithdrawModal(false)}
+              >
                 Cancel
               </button>
             </div>

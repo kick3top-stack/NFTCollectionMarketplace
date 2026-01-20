@@ -1,11 +1,11 @@
+import "../../styles/RepresentativeCollection.css";
 import CollectionHeader from "./CollectionHeader";
 import CollectionGrid from "./RepresentativeCollectionGrid";
-import "../../styles/RepresentativeCollection.css";
 
 export default function RepresentativeCollection() {
   return (
-    <section className="collection-section">
-      <div className="collection-container">
+    <section className="rc-section">
+      <div className="rc-container">
         <CollectionHeader />
         <CollectionGrid />
       </div>

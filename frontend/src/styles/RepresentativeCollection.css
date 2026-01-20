@@ -1,113 +1,139 @@
-/* Section wrapper */
-.collection-section {
-  padding: 60px 20px; /* reduced padding top/bottom */
-  background: #0b0f19;
-  color: white;
-}
+/* ============================
+   ROOT WRAPPER
+============================ */
+/* ============================
+   SECTION
+============================ */
 
-/* Grid */
-.collection-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 30px;
-  max-width: 1400px;
-  margin: auto;
-}
-
-/* Collection card */
-.collection-card {
-  background: #111526;
-  padding: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 10px;
-  overflow: hidden;
-  cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  display: flex;
-  flex-direction: column;
-}
-
-.collection-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 12px 30px rgba(32, 129, 226, 0.4);
-}
-
-.collection-image {
+.rc-section {
   width: 100%;
-  padding-top: 100%; /* square ratio */
-  background-size: cover;
-  background-position: center;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 5px;
+  position: relative;
+
+  /* Clear separation from other sections */
+  padding: clamp(48px, 6vw, 96px) 0;
+
+  /* Subtle contrast from page background */
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.015),
+    rgba(255, 255, 255, 0)
+  );
 }
 
-.collection-info {
-  padding: 16px;
+/* ============================
+   CONTAINER
+============================ */
+
+.rc-container {
+  max-width: 1440px;
+  margin: 0 auto;
+
+  padding: 0 clamp(20px, 4vw, 64px);
+
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 36px;
+
+  /* Prevent child clipping */
+  overflow: visible;
 }
 
-.collection-info h3 {
-  font-size: 1rem; /* slightly smaller */
-  font-weight: 600; /* lighter font-weight */
-  color: #fff;
-  margin: 0;
+/* ============================
+   OPTIONAL NEON ACCENT
+   (extremely subtle)
+============================ */
+
+.rc-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+
+  transform: translateX(-50%);
+  width: 60%;
+  height: 1px;
+
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(0, 229, 255, 0.25),
+    transparent
+  );
 }
 
-.collection-info .owner {
-  font-size: 0.85rem;
-  color: #9ca3af;
-}
+/* ============================
+   RESPONSIVE
+============================ */
 
-.collection-info .items {
-  font-size: 0.8rem;
-  color: #6b7280;
-}
-
-/* Responsive */
 @media (max-width: 768px) {
-  .collection-section {
-    padding: 40px 16px;
-  }
-
-  .collection-header h2 {
-    font-size: 1.5rem;
-    margin-bottom: 20px;
-  }
-
-  .collection-info h3 {
-    font-size: 0.95rem;
-  }
-
-  .collection-info .owner {
-    font-size: 0.8rem;
-  }
-
-  .collection-info .items {
-    font-size: 0.75rem;
+  .rc-container {
+    gap: 28px;
   }
 }
 
-/* Container for proper spacing */
-.collection-container {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 20px; /* horizontal padding */
+.rcg-wrapper {
+  width: 100%;
+  padding: clamp(24px, 4vw, 56px);
+  box-sizing: border-box;
 }
 
-/* Header */
-.collection-header h2 {
-  font-size: 1.6rem; /* smaller than before */
-  font-weight: 700;
-  text-align: center;
-  line-height: 1.2;
-  color: #fff;
-}
+/* ============================
+   GRID
+============================ */
 
-/* Grid */
-.collection-grid {
+.rcg-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 24px; /* smaller gap than before */
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 28px;
+
+  align-items: stretch;
+}
+
+/* Prevent clipping from children */
+.rcg-grid > * {
+  min-width: 0;
+}
+
+/* ============================
+   LOADING STATE
+============================ */
+
+.rcg-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  padding: 80px 0;
+  gap: 14px;
+
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 500;
+}
+
+.rcg-spinner {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  border-top-color: #00e5ff;
+
+  animation: rcg-spin 0.9s linear infinite;
+}
+
+@keyframes rcg-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ============================
+   RESPONSIVE
+============================ */
+
+@media (max-width: 768px) {
+  .rcg-grid {
+    gap: 20px;
+  }
 }
